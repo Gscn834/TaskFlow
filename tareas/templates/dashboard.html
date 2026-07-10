@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - TaskFlow</title>
+    <link rel="stylesheet" href="{% url 'style' %}">
+</head>
+<body>
+    <div class="dashboard-container">
+        <h1>Taskflow - Dashboard</h1>
+        <h2>Bienvenido, {{ usuario.first_name|default:usuario.username }}!<br><br>Este es tu Dashboard</h2>
+        <!-- Aqui irian los elementos del dashboard -->
+    </div>
+    {% if es_admin %}  <!-- Se corrigio la condicion del Script, siempre mandaba como usuario normal. "request.user.groups.0.name" -->
+        <div class="admin-panel">
+            <h2>Panel de Administraci&oacute;n</h2><hr>
+            <p>Tienes permisos de administrador,<br><br>Aca puedes gestionar usuarios, tareas y configuraciones del sistema.</p>
+            <!-- Aqui irian los elementos del panel de administracion -->
+        </div>
+
+        <div class="task-container">
+            <h2>Gestion de Tareas y Proyectos</h2><hr>
+            <p>Aqui puedes crear nuevas tareas y proyectos, y ver las tareas asignadas a ti.</p>
+            
+            <h3>Proyectos</h3>
+            <ul>
+                {% for proyecto in proyectos %}
+                    <li>{{ proyecto.nombre }} - {{ proyecto.descripcion }}</li>
+                {% empty %}
+                    <li>No hay proyectos disponibles.</li>
+                {% endfor %}
+            </ul>   
+            <h3>Tareas Asignadas</h3>
+            <ul>
+                {% for tarea in tareas %}
+                    <li>
+                        <p>{{ tarea.titulo }} - Estado:
+                        {% if tarea.completada %} ✅ {% else %} ❌ {% endif %}
+                        - {{tarea.proyecto.nombre}}
+                        </p>
+                        <p>{{ tarea.descripcion }}</p>
+                    </li>
+                {% empty %}
+                    <li>No tienes tareas asignadas.</li>
+                {% endfor %}
+            </ul>
+            <a href="{% url 'crear_tarea' %}"><button>Crear Nueva Tarea</button></a>
+            <a href="{% url 'crear_proyecto' %}"><button>Crear Nuevo Proyecto</button></a>
+        </div>
+    {% else %}
+        <div class="user-panel">
+            <h2>Panel de Usuario</h2><hr>
+            <p>Eres un miembro,<br><br>Aca puedes ver tus tareas asignadas, actualizar tu perfil y configurar tus preferencias.</p>
+            <!-- Aqui irian los elementos del panel de usuario -->
+        </div>
+        <div class="task-container">
+            <h2>Gestion de Tareas y Proyectos</h2><hr>
+            <p>Aqui puedes crear nuevas tareas y proyectos, y ver las tareas asignadas a ti.</p>
+            
+            <h3>Proyectos</h3>
+            <ul>
+                {% for proyecto in proyectos %}
+                    <li>{{ proyecto.nombre }} - {{ proyecto.descripcion }}</li>
+                {% empty %}
+                    <li>No hay proyectos disponibles.</li>
+                {% endfor %}
+            </ul>   
+            <h3>Tareas Asignadas</h3>
+            <ul>
+                {% for tarea in tareas %}
+                    <li>
+                        <p>{{ tarea.titulo }} - Estado:
+                        {% if tarea.completada %} ✅ {% else %} ❌ {% endif %}
+                        - {{tarea.proyecto.nombre}}
+                        </p>
+                        <p>{{ tarea.descripcion }}</p>
+                    </li>
+                {% empty %}
+                    <li>No tienes tareas asignadas.</li>
+                {% endfor %}
+            </ul>
+            <a href="{% url 'crear_tarea' %}"><button>Crear Nueva Tarea</button></a>
+    {% endif %}
+
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit">Cerrar Sesion</button>
+    </form>
+</body>
+</html>

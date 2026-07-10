@@ -1,0 +1,51 @@
+# Created by venv; see https://docs.python.org/3/library/venv.html
+# ========================
+# Entornos Virtuales
+# ========================
+Lib/
+Scripts/
+ENV/
+.venv/
+Include/
+# ========================
+# Python
+# ========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# ========================
+# Django
+# ========================
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+pyvenv.cfg
+
+# ========================
+# Archivos Estáticos y Media
+# ========================
+media/
+staticfiles/
+
+# ========================
+# Secretos y Variables de Entorno
+# ========================
+.env
+.env.local
+
+# ========================
+# Editores de Código (IDE)
+# ========================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ========================
+# Sistemas Operativos
+# ========================
+.DS_Store
+Thumbs.db
