@@ -1,8 +1,8 @@
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.http import HttpResponse
+from django.contrib import messages
 
-from .models import Tarea, Proyecto
+from .models import Tarea, Proyecto, Usuario
 from .forms import TareaForm, ProyectoForm
 
 # Create your views here.
@@ -54,3 +54,62 @@ def redirect_to(request):
         return redirect('dashboard')
     else:
         return redirect('login' )
+    
+def registro_view(request):
+    # Vista para registrar usuarios utilizando el cifrado basado en matrices.
+    if request.method == 'POST':
+        correo = request.POST.get('correo')
+        nombre = request.POST.get('nombre')
+        password = request.POST.get('password')
+
+        # Validación básica de seguridad
+        if Usuario.objects.filter(correo_electronico=correo).exists():
+            messages.error(request, "El correo ya está registrado en el sistema.")
+            return redirect('registro')
+
+        # Instanciación y guardado usando la función matemática
+        nuevo_usuario = Usuario(
+            correo_electronico=correo,
+            nombre_completo=nombre
+        )
+        nuevo_usuario.set_password(password)
+        nuevo_usuario.save()
+
+        messages.success(request, "Usuario creado con éxito.")
+        return redirect('login')
+
+    return render(request, 'registro.html')
+
+def login_view(request):
+    # Vista de autenticación que evalúa la congruencia de los hashes.
+    if request.method == 'POST':
+        correo = request.POST.get('correo')
+        password = request.POST.get('password')
+
+        try:
+            usuario = Usuario.objects.get(correo_electronico=correo)
+            # Se aplica Algebra y Teoría de Números internamente en check_password
+            if usuario.check_password(password):
+                # Autenticación exitosa (Simulación de sesión)
+                request.session['usuario_id'] = usuario.id_usuario
+                return redirect('dashboard')
+            else:
+                messages.error(request, "Credenciales incorrectas.")
+        except Usuario.DoesNotExist:
+            messages.error(request, "El usuario no existe.")
+            
+    return render(request, 'login.html')
+
+def logout_view(request):
+    
+    # Vista de control para finalizar la sesión del usuario.
+    # Verificamos si existe una sesión activa antes de intentar cerrarla
+    if 'usuario_id' in request.session:
+        # flush() elimina todos los datos de la sesión y borra la cookie
+        request.session.flush()
+        messages.success(request, "Has cerrado sesión exitosamente. ¡Hasta pronto!")
+    else:
+        # Prevención de errores si un usuario no autenticado intenta acceder a la ruta
+        messages.info(request, "No había ninguna sesión activa.")
+        
+    return redirect('login')

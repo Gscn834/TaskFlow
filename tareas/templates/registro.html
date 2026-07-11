@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro | TaskFlow</title>
+    <!-- Se utiliza una fuente limpia y geométrica para dar un aspecto profesional -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* =========================================================
+           Variables CSS para coherencia visual con TaskFlow
+           ========================================================= */
+        :root {
+            --primary-color: #4F46E5; /* Índigo moderno para llamadas a la acción */
+            --primary-hover: #4338CA;
+            --bg-color: #F3F4F6;      /* Gris claro para reducir fatiga visual */
+            --card-bg: #FFFFFF;
+            --text-main: #111827;
+            --text-muted: #6B7280;
+            --border-color: #D1D5DB;
+            --error-bg: #FEE2E2;
+            --error-text: #B91C1C;
+            --success-bg: #D1FAE5;
+            --success-text: #065F46;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* =========================================================
+           Contenedor Principal (Card de Registro)
+           ========================================================= */
+        .auth-container {
+            background-color: var(--card-bg);
+            width: 100%;
+            max-width: 400px;
+            padding: 2.5rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .auth-header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-header p {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        /* =========================================================
+           Manejo de Mensajes de Django (Alertas)
+           ========================================================= */
+        .alert {
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            font-size: 0.875rem;
+            font-weight: 400;
+        }
+
+        .alert-error {
+            background-color: var(--error-bg);
+            color: var(--error-text);
+            border: 1px solid #FCA5A5;
+        }
+
+        .alert-success {
+            background-color: var(--success-bg);
+            color: var(--success-text);
+            border: 1px solid #6EE7B7;
+        }
+
+        /* =========================================================
+           Estilos del Formulario
+           ========================================================= */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-main);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.625rem 0.875rem;
+            font-size: 0.875rem;
+            font-family: inherit;
+            color: var(--text-main);
+            background-color: #F9FAFB;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background-color: #FFFFFF;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #FFFFFF;
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.15s ease-in-out;
+            margin-top: 0.5rem;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .auth-footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="auth-container">
+        <div class="auth-header">
+            <!-- Título pensado para la identidad de TaskFlow -->
+            <h1>Únete a TaskFlow</h1>
+            <p>Comienza a gestionar tus tareas de forma segura.</p>
+        </div>
+
+        <!-- Renderizado de mensajes del Backend (Framework Django) -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {% if message.tags == 'error' %}alert-error{% else %}alert-success{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Formulario de Registro apuntando a la vista correspondiente -->
+        <form action="{% url 'registro' %}" method="POST" autocomplete="off">
+            <!-- Token de seguridad contra ataques CSRF obligatorio en Django -->
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="id_nombre">Nombre Completo</label>
+                <input type="text" id="id_nombre" name="nombre" class="form-control" placeholder="Ej. Ana Martínez" required>
+            </div>
+
+            <div class="form-group">
+                <label for="id_correo">Correo Electrónico</label>
+                <input type="email" id="id_correo" name="correo" class="form-control" placeholder="tu@email.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="id_password">Contraseña (Será encriptada algebraicamente)</label>
+                <input type="password" id="id_password" name="password" class="form-control" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" class="btn-submit">Crear Cuenta</button>
+        </form>
+
+        <div class="auth-footer">
+            ¿Ya tienes una cuenta? <a href="{% url 'login' %}">Inicia sesión aquí</a>
+        </div>
+    </div>
+
+</body>
+</html>

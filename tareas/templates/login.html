@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesion - TaskFlow</title>
+    <link rel="stylesheet" href="{% url 'style' %}">
+</head>
+<body>
+    <div class="login-container">
+        <h2>Iniciar Sesion en TaskFlow</h2>
+        <form method="post">
+            {% csrf_token %}
+            <p>
+                 <label for="id_username">Nombre de usuario:</label>
+                 <input type="text" name="username" autofocus autocapitalize="none" autocomplete="username" maxlength="150" required id="correo_electronico">
+            </p>
+            <p>
+                <label for="id_password">Contraseña:</label>
+                <input type="password" name="password" autocomplete="current-password" required id="password_hash">
+            </p>
+            <button type="submit" href="{% url 'dashboard' %}">Iniciar Sesion</button>
+            
+            <button type="button" onclick="window.location.href='{% url 'registro' %}'">Registrarse</button>
+        </form>
+    </div>
+</body>
+</html>

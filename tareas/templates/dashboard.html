@@ -9,7 +9,7 @@
 <body>
     <div class="dashboard-container">
         <h1>Taskflow - Dashboard</h1>
-        <h2>Bienvenido, {{ usuario.first_name|default:usuario.username }}!<br><br>Este es tu Dashboard</h2>
+        <h2>Bienvenido, {{ usuario.first_name|default:usuario.nombre_completo }}!<br><br>Este es tu Dashboard</h2>
         <!-- Aqui irian los elementos del dashboard -->
     </div>
     {% if es_admin %}  <!-- Se corrigio la condicion del Script, siempre mandaba como usuario normal. "request.user.groups.0.name" -->
